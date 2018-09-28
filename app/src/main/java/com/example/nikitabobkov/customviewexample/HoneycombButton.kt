@@ -5,10 +5,11 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 
-class HoneycombsButton : View {
+class HoneycombButton : View {
     private lateinit var hexagonPath: Path
     private lateinit var hexagonBorderPath: Path
     private lateinit var borderPaint: Paint
+    private lateinit var textPaint: Paint
     private var radius: Float = 0.0f
 
     constructor(context: Context) : this(context, null)
@@ -24,9 +25,12 @@ class HoneycombsButton : View {
     private fun init(context: Context) {
         hexagonPath = Path()
         hexagonBorderPath = Path()
+        textPaint = Paint()
+        textPaint.color = Color.WHITE
+        textPaint.textSize = 20f
 
         borderPaint = Paint()
-        borderPaint.color = Color.WHITE
+        borderPaint.color = Color.BLACK
         borderPaint.strokeCap = Paint.Cap.ROUND
         borderPaint.strokeWidth = 50f
         borderPaint.style = Paint.Style.STROKE
@@ -39,6 +43,10 @@ class HoneycombsButton : View {
     fun setBorderColor(color: Int) {
         this.borderPaint.color = color
         invalidate()
+    }
+
+    fun setText(text: String) {
+
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -83,6 +91,9 @@ class HoneycombsButton : View {
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas?.drawPath(hexagonBorderPath, borderPaint)
+        canvas?.clipPath(hexagonPath)
         canvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+
+        canvas?.drawText("Some Text", measuredWidth / 2f, measuredHeight / 2f, textPaint)
     }
 }
