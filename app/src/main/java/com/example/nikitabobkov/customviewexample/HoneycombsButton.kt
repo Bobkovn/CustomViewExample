@@ -5,14 +5,11 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 
-
-
 class HoneycombsButton : View {
     private lateinit var hexagonPath: Path
     private lateinit var hexagonBorderPath: Path
-    private lateinit var paint: Paint
+    private lateinit var borderPaint: Paint
     private var radius: Float = 0.0f
-    private val maskColor: Int = 0
 
     constructor(context: Context) : this(context, null)
 
@@ -25,9 +22,23 @@ class HoneycombsButton : View {
     }
 
     private fun init(context: Context) {
-        paint = Paint()
         hexagonPath = Path()
         hexagonBorderPath = Path()
+
+        borderPaint = Paint()
+        borderPaint.color = Color.WHITE
+        borderPaint.strokeCap = Paint.Cap.ROUND
+        borderPaint.strokeWidth = 50f
+        borderPaint.style = Paint.Style.STROKE
+    }
+
+    fun setRadius(radius: Float) {
+        calculatePath(radius)
+    }
+
+    fun setBorderColor(color: Int) {
+        this.borderPaint.color = color
+        invalidate()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -45,33 +56,33 @@ class HoneycombsButton : View {
         val centerX = measuredWidth / 2f
         val centerY = measuredHeight / 2f
 
-        this.hexagonPath.reset()
-        this.hexagonPath.moveTo(centerX, centerY + radius)
-        this.hexagonPath.lineTo(centerX - triangleHeight, centerY + halfRadius)
-        this.hexagonPath.lineTo(centerX - triangleHeight, centerY - halfRadius)
-        this.hexagonPath.lineTo(centerX, centerY - radius)
-        this.hexagonPath.lineTo(centerX + triangleHeight, centerY - halfRadius)
-        this.hexagonPath.lineTo(centerX + triangleHeight, centerY + halfRadius)
-        this.hexagonPath.close()
+        hexagonPath.reset()
+        hexagonPath.moveTo(centerX, centerY + radius)
+        hexagonPath.lineTo(centerX - triangleHeight, centerY + halfRadius)
+        hexagonPath.lineTo(centerX - triangleHeight, centerY - halfRadius)
+        hexagonPath.lineTo(centerX, centerY - radius)
+        hexagonPath.lineTo(centerX + triangleHeight, centerY - halfRadius)
+        hexagonPath.lineTo(centerX + triangleHeight, centerY + halfRadius)
+        hexagonPath.close()
 
         val radiusBorder = radius - 5f
         val halfRadiusBorder = radiusBorder / 2f
         val triangleBorderHeight = (Math.sqrt(3.0) * halfRadiusBorder).toFloat()
 
-        this.hexagonBorderPath.reset()
-        this.hexagonBorderPath.moveTo(centerX, centerY + radiusBorder)
-        this.hexagonBorderPath.lineTo(centerX - triangleBorderHeight, centerY + halfRadiusBorder)
-        this.hexagonBorderPath.lineTo(centerX - triangleBorderHeight, centerY - halfRadiusBorder)
-        this.hexagonBorderPath.lineTo(centerX, centerY - radiusBorder)
-        this.hexagonBorderPath.lineTo(centerX + triangleBorderHeight, centerY - halfRadiusBorder)
-        this.hexagonBorderPath.lineTo(centerX + triangleBorderHeight, centerY + halfRadiusBorder)
-        this.hexagonBorderPath.close()
+        hexagonBorderPath.reset()
+        hexagonBorderPath.moveTo(centerX, centerY + radiusBorder)
+        hexagonBorderPath.lineTo(centerX - triangleBorderHeight, centerY + halfRadiusBorder)
+        hexagonBorderPath.lineTo(centerX - triangleBorderHeight, centerY - halfRadiusBorder)
+        hexagonBorderPath.lineTo(centerX, centerY - radiusBorder)
+        hexagonBorderPath.lineTo(centerX + triangleBorderHeight, centerY - halfRadiusBorder)
+        hexagonBorderPath.lineTo(centerX + triangleBorderHeight, centerY + halfRadiusBorder)
+        hexagonBorderPath.close()
         invalidate()
     }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        canvas?.drawPath(hexagonBorderPath, paint)
+        canvas?.drawPath(hexagonBorderPath, borderPaint)
         canvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
     }
 }
