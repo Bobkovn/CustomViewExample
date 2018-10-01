@@ -3,4 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="colorHoneycomb">#F7D358</color>
+    <color name="colorHoneycombBorder">#FFBF00</color>
 </resources>
