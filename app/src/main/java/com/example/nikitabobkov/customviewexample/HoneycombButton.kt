@@ -2,6 +2,8 @@ package com.example.nikitabobkov.customviewexample
 
 import android.content.Context
 import android.graphics.*
+import android.text.TextPaint
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 
@@ -9,8 +11,14 @@ class HoneycombButton : View {
     private lateinit var hexagonPath: Path
     private lateinit var hexagonBorderPath: Path
     private lateinit var borderPaint: Paint
-    private lateinit var textPaint: Paint
+    private lateinit var textPaint: TextPaint
     private var radius: Float = 0.0f
+    private var widthView: Int = 0
+    private var heightView: Int = 0
+    private var widthHoneycomb: Int = 0
+    private var heightHoneycomb: Int = 0
+    private var text: String = "vfdjkvdfdfsdfdsfsdfs"
+    private var bounds: Rect = Rect()
 
     constructor(context: Context) : this(context, null)
 
@@ -19,18 +27,18 @@ class HoneycombButton : View {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
-        init(context)
+        init()
     }
 
-    private fun init(context: Context) {
+    private fun init() {
         hexagonPath = Path()
         hexagonBorderPath = Path()
-        textPaint = Paint()
+        textPaint = TextPaint()
         textPaint.color = Color.WHITE
-        textPaint.textSize = 20f
+        textPaint.textSize = 150f
 
         borderPaint = Paint()
-        borderPaint.color = Color.BLACK
+        borderPaint.color = Color.RED
         borderPaint.strokeCap = Paint.Cap.ROUND
         borderPaint.strokeWidth = 50f
         borderPaint.style = Paint.Style.STROKE
@@ -46,16 +54,23 @@ class HoneycombButton : View {
     }
 
     fun setText(text: String) {
-
+        this.text = text
+        invalidate()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        val width = MeasureSpec.getSize(widthMeasureSpec)
-        val height = MeasureSpec.getSize(heightMeasureSpec)
-        setMeasuredDimension(width, height)
-        radius = Math.min(width / 2f, height / 2f) - 10f
+        widthView = MeasureSpec.getSize(widthMeasureSpec)
+        heightView = MeasureSpec.getSize(heightMeasureSpec)
+        setMeasuredDimension(widthView, heightView)
+        radius = Math.min(widthView / 2f, heightView / 2f)
         calculatePath(radius)
+        calculateTextSize()
+    }
+
+    private fun calculateTextSize() {
+        text = TextUtils.ellipsize(text, textPaint, widthHoneycomb.toFloat(), TextUtils.TruncateAt.END) as String
+        textPaint.getTextBounds(text, 0, text.length - 1, bounds)
     }
 
     private fun calculatePath(radius: Float) {
@@ -63,6 +78,8 @@ class HoneycombButton : View {
         val triangleHeight = (Math.sqrt(3.0) * halfRadius).toFloat()
         val centerX = measuredWidth / 2f
         val centerY = measuredHeight / 2f
+        widthHoneycomb = (triangleHeight * 2).toInt()
+        heightHoneycomb = (radius * 2).toInt()
 
         hexagonPath.reset()
         hexagonPath.moveTo(centerX, centerY + radius)
@@ -94,6 +111,9 @@ class HoneycombButton : View {
         canvas?.clipPath(hexagonPath)
         canvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
 
-        canvas?.drawText("Some Text", measuredWidth / 2f, measuredHeight / 2f, textPaint)
+        val xPos = (widthView - textPaint.textSize * Math.abs(text.length / 2)) / 2
+
+        val yPos = (canvas?.height!! / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
+        canvas.drawText(text, xPos, yPos, textPaint)
     }
 }
