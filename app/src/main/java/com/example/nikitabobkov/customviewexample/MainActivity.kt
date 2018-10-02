@@ -3,6 +3,7 @@ package com.example.nikitabobkov.customviewexample
 import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import com.example.nikitabobkov.customviewexample.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), OnHoneycombClickListener {
@@ -17,5 +18,6 @@ class MainActivity : AppCompatActivity(), OnHoneycombClickListener {
     override fun onHoneycombClick() {
         binding.honeycomb.setText(counter.toString())
         counter += 100
+        Toast.makeText(baseContext, "test", Toast.LENGTH_SHORT).show()
     }
 }

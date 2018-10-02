@@ -1,11 +1,14 @@
 package com.example.nikitabobkov.customviewexample
 
 import android.content.Context
+import android.hardware.SensorManager
 import android.util.AttributeSet
 import android.view.ViewGroup
 
 class HoneycombLayout : ViewGroup {
     private var amount: Int = 0
+    private var widthView: Int = 0
+    private var heightView: Int = 0
 
     constructor(context: Context) : this(context, null)
 
@@ -18,7 +21,24 @@ class HoneycombLayout : ViewGroup {
     }
 
     private fun init() {
+        addHoneycombs()
+    }
 
+    private fun addHoneycombs() {
+        removeAllViews()
+        for (i in amount downTo 0) {
+            val view = HoneycombButton(context)
+            view.setText(i.toString())
+            view.setRadius(100f)
+            addView(view)
+        }
+    }
+
+     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        widthView = MeasureSpec.getSize(widthMeasureSpec)
+        heightView = MeasureSpec.getSize(heightMeasureSpec)
+        setMeasuredDimension(widthView, heightView)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -27,6 +47,7 @@ class HoneycombLayout : ViewGroup {
 
     fun setHoneycombAmount(amount: Int) {
         this.amount = amount
+        addHoneycombs()
         invalidate()
     }
 }

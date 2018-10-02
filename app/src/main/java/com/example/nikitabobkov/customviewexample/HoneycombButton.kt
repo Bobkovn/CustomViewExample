@@ -128,10 +128,12 @@ class HoneycombButton : View {
     private fun calculatePath(radius: Float) {
         val halfRadius = radius / 2f
         val triangleHeight = (Math.sqrt(3.0) * halfRadius).toFloat()
-        val centerX = measuredWidth / 2f
-        val centerY = measuredHeight / 2f
         widthHoneycomb = (triangleHeight * 2).toInt()
         heightHoneycomb = (radius * 2).toInt()
+        //TODO: 02/10/18 set real view size
+        //setMeasuredDimension(widthHoneycomb, heightHoneycomb)
+        val centerX = measuredWidth / 2f
+        val centerY = measuredHeight / 2f
 
         hexagonPath.reset()
         hexagonPath.moveTo(centerX, centerY + radius)
