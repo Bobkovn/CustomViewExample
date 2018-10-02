@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="HoneycombButton">
-        <attr name="HCB_text" format="reference" />
-        <attr name="HCB_color" format="integer" />
-        <attr name="HCB_borderColor" format="integer" />
-        <attr name="HCB_textColor" format="integer" />
-        <attr name="HCB_textSize" format="float" />
-        <attr name="HCB_cornerRadius" format="float" />
-        <attr name="HCB_radius" format="float" />
+        <attr name="hcb_text" format="reference" />
+        <attr name="hcb_color" format="integer" />
+        <attr name="hcb_borderColor" format="integer" />
+        <attr name="hcb_textColor" format="integer" />
+        <attr name="hcb_textSize" format="float" />
+        <attr name="hcb_cornerRadius" format="float" />
+        <attr name="hcb_radius" format="float" />
     </declare-styleable>
 </resources>

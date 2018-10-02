@@ -49,17 +49,17 @@ class HoneycombButton : View {
 
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.HoneycombButton, 0, 0)
         text = getTextFromAttr(typedArray)
-        color = typedArray.getInteger(R.styleable.HoneycombButton_HCB_color, context.resources.getColor(R.color.colorHoneycomb))
-        borderPaint.color = typedArray.getInteger(R.styleable.HoneycombButton_HCB_borderColor, context.resources.getColor(R.color.colorHoneycombBorder))
-        textPaint.color = typedArray.getInteger(R.styleable.HoneycombButton_HCB_textColor, Color.BLACK)
-        textSize = typedArray.getFloat(R.styleable.HoneycombButton_HCB_textSize, 0f)
-        borderPaint.pathEffect = CornerPathEffect(typedArray.getFloat(R.styleable.HoneycombButton_HCB_cornerRadius, 10f))
-        radius = typedArray.getFloat(R.styleable.HoneycombButton_HCB_radius, 0f)
+        color = typedArray.getInteger(R.styleable.HoneycombButton_hcb_color, context.resources.getColor(R.color.colorHoneycomb))
+        borderPaint.color = typedArray.getInteger(R.styleable.HoneycombButton_hcb_borderColor, context.resources.getColor(R.color.colorHoneycombBorder))
+        textPaint.color = typedArray.getInteger(R.styleable.HoneycombButton_hcb_textColor, Color.BLACK)
+        textSize = typedArray.getFloat(R.styleable.HoneycombButton_hcb_textSize, 0f)
+        borderPaint.pathEffect = CornerPathEffect(typedArray.getFloat(R.styleable.HoneycombButton_hcb_cornerRadius, 10f))
+        radius = typedArray.getFloat(R.styleable.HoneycombButton_hcb_radius, 0f)
         typedArray.recycle()
     }
 
     private fun getTextFromAttr(a: TypedArray): String {
-        val id = a.getResourceId(R.styleable.HoneycombButton_HCB_text, -1)
+        val id = a.getResourceId(R.styleable.HoneycombButton_hcb_text, -1)
         return if (id == -1) "" else resources.getString(id)
     }
 
@@ -96,6 +96,14 @@ class HoneycombButton : View {
         this.text = text
         calculateTextSize()
         invalidate()
+    }
+
+    fun getHoneycombWidth() : Int {
+        return widthHoneycomb
+    }
+
+    fun getHoneycombHeight() : Int {
+        return heightHoneycomb
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -162,7 +170,10 @@ class HoneycombButton : View {
         canvas?.clipPath(hexagonPath)
         canvas?.drawColor(color)
 
-        val xPos = (widthView - textPaint.textSize * Math.abs(text.length / 2)) / 2
+        var xPos = (widthHoneycomb - textPaint.textSize * Math.abs(text.length / 2)) / 2
+        if (xPos == 0f) {
+            xPos += ((heightHoneycomb - widthHoneycomb) / 2)
+        }
         val yPos = (height / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
         canvas?.drawText(text, xPos, yPos, textPaint)
     }
