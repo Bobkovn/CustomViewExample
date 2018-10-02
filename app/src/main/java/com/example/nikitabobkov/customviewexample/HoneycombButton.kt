@@ -34,10 +34,10 @@ class HoneycombButton : View {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
-        init(attrs!!)
+        init(attrs)
     }
 
-    private fun init(attrs: AttributeSet) {
+    private fun init(attrs: AttributeSet?) {
         hexagonPath = Path()
         hexagonBorderPath = Path()
         textPaint = TextPaint()

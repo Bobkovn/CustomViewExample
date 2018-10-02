@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.ViewGroup
 
 class HoneycombLayout : ViewGroup {
+    private var amount: Int = 0
 
     constructor(context: Context) : this(context, null)
 
@@ -20,7 +21,12 @@ class HoneycombLayout : ViewGroup {
 
     }
 
-    override fun onLayout(p0: Boolean, p1: Int, p2: Int, p3: Int, p4: Int) {
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
 
+    }
+
+    fun setHoneycombAmount(amount: Int) {
+        this.amount = amount
+        invalidate()
     }
 }
