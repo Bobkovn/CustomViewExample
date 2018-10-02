@@ -8,6 +8,7 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
 
 
 class HoneycombButton : View {
@@ -24,7 +25,7 @@ class HoneycombButton : View {
     private var text: String = ""
     private var bounds: Rect = Rect()
     private var clickableRegion = Region()
-    private lateinit var listener: OnHoneycombClickListener
+    private var listener: OnHoneycombClickListener? = null
     private var color: Int = 0
 
     constructor(context: Context) : this(context, null)
@@ -60,7 +61,7 @@ class HoneycombButton : View {
 
     private fun getTextFromAttr(a: TypedArray): String {
         val id = a.getResourceId(R.styleable.HoneycombButton_hcb_text, -1)
-        return if (id == -1) "" else resources.getString(id)
+        return if (id == -1) "fjksdkfjglkndslknvgds" else resources.getString(id)
     }
 
     fun setRadius(radius: Float) {
@@ -110,8 +111,19 @@ class HoneycombButton : View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         widthView = MeasureSpec.getSize(widthMeasureSpec)
         heightView = MeasureSpec.getSize(heightMeasureSpec)
-        setMeasuredDimension(widthView, heightView)
-        radius = if (radius > 0) radius else Math.min(widthView / 2f, heightView / 2f)
+        //radius = if (radius > 0) radius else Math.min(widthView / 2f, heightView / 2f)
+        val preRadius = Math.min(widthView / 2f, heightView / 2f)
+
+
+        setMeasuredDimension(((Math.sqrt(3.0) * (preRadius/2))*2).toInt(), (preRadius * 2).toInt())
+
+        val halfRadius = preRadius / 2f
+        val triangleHeight = (Math.sqrt(3.0) * halfRadius).toFloat()
+        widthHoneycomb = (triangleHeight * 2).toInt()
+        heightHoneycomb = (preRadius * 2).toInt()
+
+        radius = if (radius > 0) radius else Math.min(widthHoneycomb / 2f, heightHoneycomb / 2f)
+
         calculatePath(radius)
         calculateTextSize()
         calculateClickableRegion()
@@ -187,9 +199,10 @@ class HoneycombButton : View {
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         val x = event?.x!!.toInt()
         val y = event.y.toInt()
-        if (clickableRegion.contains(x, y) && event.action == MotionEvent.ACTION_UP) {
-            listener.onHoneycombClick()
+        if (clickableRegion.contains(x, y) && event.action == MotionEvent.ACTION_UP ) {
+            listener?.onHoneycombClick()
         }
+        Toast.makeText(context, "test", Toast.LENGTH_SHORT).show()
         return true
     }
 }
