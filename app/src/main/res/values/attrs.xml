@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="HoneycombButton">
-        <attr name="HCB_text" format="string" />
+        <attr name="HCB_text" format="reference" />
         <attr name="HCB_color" format="integer" />
         <attr name="HCB_borderColor" format="integer" />
         <attr name="HCB_textColor" format="integer" />

@@ -1,6 +1,7 @@
 package com.example.nikitabobkov.customviewexample
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.graphics.*
 import android.text.TextPaint
 import android.text.TextUtils
@@ -20,7 +21,7 @@ class HoneycombButton : View {
     private var heightView: Int = 0
     private var widthHoneycomb: Int = 0
     private var heightHoneycomb: Int = 0
-    private var text: String = "vfdjkvdfdfsdfdsfsdfs"
+    private var text: String = ""
     private var bounds: Rect = Rect()
     private var clickableRegion = Region()
     private lateinit var listener: OnHoneycombClickListener
@@ -47,14 +48,19 @@ class HoneycombButton : View {
         borderPaint.style = Paint.Style.STROKE
 
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.HoneycombButton, 0, 0)
-        //text = typedArray?.getString(R.styleable.HoneycombButton_HCB_text)!!
-        color = typedArray.getInteger(R.styleable.HoneycombButton_HCB_color,context.resources.getColor(R.color.colorHoneycomb))
+        text = getTextFromAttr(typedArray)
+        color = typedArray.getInteger(R.styleable.HoneycombButton_HCB_color, context.resources.getColor(R.color.colorHoneycomb))
         borderPaint.color = typedArray.getInteger(R.styleable.HoneycombButton_HCB_borderColor, context.resources.getColor(R.color.colorHoneycombBorder))
         textPaint.color = typedArray.getInteger(R.styleable.HoneycombButton_HCB_textColor, Color.BLACK)
         textSize = typedArray.getFloat(R.styleable.HoneycombButton_HCB_textSize, 0f)
         borderPaint.pathEffect = CornerPathEffect(typedArray.getFloat(R.styleable.HoneycombButton_HCB_cornerRadius, 10f))
         radius = typedArray.getFloat(R.styleable.HoneycombButton_HCB_radius, 0f)
         typedArray.recycle()
+    }
+
+    private fun getTextFromAttr(a: TypedArray): String {
+        val id = a.getResourceId(R.styleable.HoneycombButton_HCB_text, -1)
+        return if (id == -1) "" else resources.getString(id)
     }
 
     fun setRadius(radius: Float) {
@@ -88,6 +94,7 @@ class HoneycombButton : View {
 
     fun setText(text: String) {
         this.text = text
+        calculateTextSize()
         invalidate()
     }
 
@@ -96,16 +103,18 @@ class HoneycombButton : View {
         widthView = MeasureSpec.getSize(widthMeasureSpec)
         heightView = MeasureSpec.getSize(heightMeasureSpec)
         setMeasuredDimension(widthView, heightView)
-        radius = if(radius > 0) radius else Math.min(widthView / 2f, heightView / 2f)
+        radius = if (radius > 0) radius else Math.min(widthView / 2f, heightView / 2f)
         calculatePath(radius)
         calculateTextSize()
         calculateClickableRegion()
     }
 
     private fun calculateTextSize() {
-        textPaint.textSize = if(textSize > 0) textSize else (widthHoneycomb / 5).toFloat()
-        text = TextUtils.ellipsize(text, textPaint, widthHoneycomb.toFloat(), TextUtils.TruncateAt.END) as String
-        textPaint.getTextBounds(text, 0, text.length - 1, bounds)
+        if (text.isNotEmpty()) {
+            textPaint.textSize = if (textSize > 0) textSize else (widthHoneycomb / 5).toFloat()
+            text = TextUtils.ellipsize(text, textPaint, widthHoneycomb.toFloat(), TextUtils.TruncateAt.END) as String
+            textPaint.getTextBounds(text, 0, text.length - 1, bounds)
+        }
     }
 
     private fun calculatePath(radius: Float) {
@@ -166,7 +175,7 @@ class HoneycombButton : View {
         val x = event?.x!!.toInt()
         val y = event.y.toInt()
         if (clickableRegion.contains(x, y) && event.action == MotionEvent.ACTION_UP) {
-            listener.onHoneycombClick(this)
+            listener.onHoneycombClick()
         }
         return true
     }
