@@ -12,11 +12,12 @@ class MainActivity : AppCompatActivity(), OnHoneycombClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        //binding.honeycomb.setOnClickListener(this)
+        binding.honeycomb.setOnClickListener(this)
     }
 
     override fun onHoneycombClick() {
-        binding.honeycomb.setRadius(counter.toFloat())
         counter += 50
+        //binding.honeycomb.setRadius(counter.toFloat())
+        binding.honeycomb.setText(counter.toString())
     }
 }

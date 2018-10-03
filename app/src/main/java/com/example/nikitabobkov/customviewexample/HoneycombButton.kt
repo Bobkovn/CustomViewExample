@@ -8,7 +8,6 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Toast
 
 
 class HoneycombButton : View {
@@ -18,14 +17,14 @@ class HoneycombButton : View {
     private lateinit var textPaint: TextPaint
     private var radius: Float = 0f
     private var textSize: Float = 0f
-    private var widthView: Int = 0
-    private var heightView: Int = 0
     private var widthHoneycomb: Int = 0
     private var heightHoneycomb: Int = 0
+    private var borderWidth: Float = 50f
     private var text: String = ""
-    private var bounds: Rect = Rect()
+    private var ellipsizeText: String = ""
     private var clickableRegion = Region()
     private var listener: OnHoneycombClickListener? = null
+    private var bounds: Rect = Rect()
     private var color: Int = 0
 
     constructor(context: Context) : this(context, null)
@@ -45,7 +44,7 @@ class HoneycombButton : View {
 
         borderPaint = Paint()
         borderPaint.strokeCap = Paint.Cap.ROUND
-        borderPaint.strokeWidth = 50f
+        borderPaint.strokeWidth = borderWidth
         borderPaint.style = Paint.Style.STROKE
 
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.HoneycombButton, 0, 0)
@@ -61,11 +60,12 @@ class HoneycombButton : View {
 
     private fun getTextFromAttr(a: TypedArray): String {
         val id = a.getResourceId(R.styleable.HoneycombButton_hcb_text, -1)
-        return if (id == -1) "fjksdkfjglkndslknvgds" else resources.getString(id)
+        return if (id == -1) "vfvvfvhuj" else resources.getString(id)
     }
 
     fun setRadius(radius: Float) {
-        calculatePath(radius)
+        this.radius = radius
+        requestLayout()
     }
 
     fun setCornerRadius(radius: Float) {
@@ -99,51 +99,37 @@ class HoneycombButton : View {
         invalidate()
     }
 
-    fun getHoneycombWidth() : Int {
+    fun getHoneycombWidth(): Int {
         return widthHoneycomb
     }
 
-    fun getHoneycombHeight() : Int {
+    fun getHoneycombHeight(): Int {
         return heightHoneycomb
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        widthView = MeasureSpec.getSize(widthMeasureSpec)
-        heightView = MeasureSpec.getSize(heightMeasureSpec)
-        //radius = if (radius > 0) radius else Math.min(widthView / 2f, heightView / 2f)
-        val preRadius = Math.min(widthView / 2f, heightView / 2f)
-
-
-        setMeasuredDimension(((Math.sqrt(3.0) * (preRadius/2))*2).toInt(), (preRadius * 2).toInt())
-
-        val halfRadius = preRadius / 2f
-        val triangleHeight = (Math.sqrt(3.0) * halfRadius).toFloat()
-        widthHoneycomb = (triangleHeight * 2).toInt()
-        heightHoneycomb = (preRadius * 2).toInt()
-
-        radius = if (radius > 0) radius else Math.min(widthHoneycomb / 2f, heightHoneycomb / 2f)
-
-        calculatePath(radius)
-        calculateTextSize()
+        radius = if (radius > 0) radius else 200f
+        calculateView()
         calculateClickableRegion()
+        invalidate()
     }
 
     private fun calculateTextSize() {
         if (text.isNotEmpty()) {
             textPaint.textSize = if (textSize > 0) textSize else (widthHoneycomb / 5).toFloat()
-            text = TextUtils.ellipsize(text, textPaint, widthHoneycomb.toFloat(), TextUtils.TruncateAt.END) as String
-            textPaint.getTextBounds(text, 0, text.length - 1, bounds)
+            ellipsizeText = TextUtils.ellipsize(text, textPaint, widthHoneycomb.toFloat() - (borderWidth * 2), TextUtils.TruncateAt.END) as String
+            textPaint.getTextBounds(ellipsizeText, 0, ellipsizeText.length - 1, bounds)
         }
     }
 
-    private fun calculatePath(radius: Float) {
+    private fun calculateView() {
         val halfRadius = radius / 2f
         val triangleHeight = (Math.sqrt(3.0) * halfRadius).toFloat()
-        widthHoneycomb = (triangleHeight * 2).toInt()
-        heightHoneycomb = (radius * 2).toInt()
-        //TODO: 02/10/18 set real view size
-        //setMeasuredDimension(widthHoneycomb, heightHoneycomb)
+        widthHoneycomb = (triangleHeight * 2 + borderWidth).toInt()
+        heightHoneycomb = (radius * 2 + borderWidth).toInt()
+        setMeasuredDimension(widthHoneycomb, heightHoneycomb)
+
         val centerX = measuredWidth / 2f
         val centerY = measuredHeight / 2f
 
@@ -168,7 +154,8 @@ class HoneycombButton : View {
         hexagonBorderPath.lineTo(centerX + triangleBorderHeight, centerY - halfRadiusBorder)
         hexagonBorderPath.lineTo(centerX + triangleBorderHeight, centerY + halfRadiusBorder)
         hexagonBorderPath.close()
-        invalidate()
+
+        calculateTextSize()
     }
 
     private fun calculateClickableRegion() {
@@ -184,12 +171,17 @@ class HoneycombButton : View {
         canvas?.clipPath(hexagonPath)
         canvas?.drawColor(color)
 
-        var xPos = (widthHoneycomb - textPaint.textSize * Math.abs(text.length / 2)) / 2
-        if (xPos == 0f) {
-            xPos += ((heightHoneycomb - widthHoneycomb) / 2)
+        //TODO: 03/10/18 find x pos
+        if (text.isNotEmpty()) {
+            val xPos = (widthHoneycomb / 2 - bounds.width() / 2).toFloat() - borderWidth
+//        var xPos = (widthHoneycomb - textPaint.textSize * Math.abs(text.length / 2)) / 2
+//        if (xPos < borderWidth) {
+//            xPos = borderWidth
+//        }
+            val yPos = (height / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
+
+            canvas?.drawText(ellipsizeText, xPos, yPos, textPaint)
         }
-        val yPos = (height / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
-        canvas?.drawText(text, xPos, yPos, textPaint)
     }
 
     fun setOnClickListener(listener: OnHoneycombClickListener) {
@@ -199,10 +191,9 @@ class HoneycombButton : View {
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         val x = event?.x!!.toInt()
         val y = event.y.toInt()
-        if (clickableRegion.contains(x, y) && event.action == MotionEvent.ACTION_UP ) {
+        if (clickableRegion.contains(x, y) && event.action == MotionEvent.ACTION_UP) {
             listener?.onHoneycombClick()
         }
-        Toast.makeText(context, "test", Toast.LENGTH_SHORT).show()
         return true
     }
 }
