@@ -60,7 +60,7 @@ class HoneycombButton : View {
 
     private fun getTextFromAttr(a: TypedArray): String {
         val id = a.getResourceId(R.styleable.HoneycombButton_hcb_text, -1)
-        return if (id == -1) "vfvvfvhuj" else resources.getString(id)
+        return if (id == -1) "" else resources.getString(id)
     }
 
     fun setRadius(radius: Float) {
@@ -95,7 +95,7 @@ class HoneycombButton : View {
 
     fun setText(text: String) {
         this.text = text
-        calculateTextSize()
+        setupTextSize()
         invalidate()
     }
 
@@ -109,21 +109,26 @@ class HoneycombButton : View {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        radius = if (radius > 0) radius else 200f
-        calculateView()
-        calculateClickableRegion()
+        setupRadius(widthMeasureSpec, heightMeasureSpec)
+        setupView()
+        setupClickableRegion()
         invalidate()
     }
 
-    private fun calculateTextSize() {
+    private fun setupRadius(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+
+        radius = if (radius > 0) radius else 200f
+    }
+
+    private fun setupTextSize() {
         if (text.isNotEmpty()) {
             textPaint.textSize = if (textSize > 0) textSize else (widthHoneycomb / 5).toFloat()
             ellipsizeText = TextUtils.ellipsize(text, textPaint, widthHoneycomb.toFloat() - (borderWidth * 2), TextUtils.TruncateAt.END) as String
-            textPaint.getTextBounds(ellipsizeText, 0, ellipsizeText.length - 1, bounds)
+            textPaint.getTextBounds(ellipsizeText, 0, ellipsizeText.length, bounds)
         }
     }
 
-    private fun calculateView() {
+    private fun setupView() {
         val halfRadius = radius / 2f
         val triangleHeight = (Math.sqrt(3.0) * halfRadius).toFloat()
         widthHoneycomb = (triangleHeight * 2 + borderWidth).toInt()
@@ -155,10 +160,10 @@ class HoneycombButton : View {
         hexagonBorderPath.lineTo(centerX + triangleBorderHeight, centerY + halfRadiusBorder)
         hexagonBorderPath.close()
 
-        calculateTextSize()
+        setupTextSize()
     }
 
-    private fun calculateClickableRegion() {
+    private fun setupClickableRegion() {
         val rectF = RectF()
         hexagonPath.computeBounds(rectF, true)
         val rect = Rect(rectF.left.toInt(), rectF.top.toInt(), rectF.right.toInt(), rectF.bottom.toInt())
@@ -171,15 +176,9 @@ class HoneycombButton : View {
         canvas?.clipPath(hexagonPath)
         canvas?.drawColor(color)
 
-        //TODO: 03/10/18 find x pos
         if (text.isNotEmpty()) {
-            val xPos = (widthHoneycomb / 2 - bounds.width() / 2).toFloat() - borderWidth
-//        var xPos = (widthHoneycomb - textPaint.textSize * Math.abs(text.length / 2)) / 2
-//        if (xPos < borderWidth) {
-//            xPos = borderWidth
-//        }
+            val xPos = (widthHoneycomb / 2 - bounds.width() / 2).toFloat()
             val yPos = (height / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
-
             canvas?.drawText(ellipsizeText, xPos, yPos, textPaint)
         }
     }
