@@ -29,7 +29,7 @@ class HoneycombLayout : ViewGroup {
         for (i in amount downTo 0) {
             val view = HoneycombButton(context)
             view.setText(i.toString())
-            view.setRadius(100f)
+            view.setRadius(500f)
             addView(view)
         }
     }
@@ -42,6 +42,9 @@ class HoneycombLayout : ViewGroup {
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        val view = getChildAt(0)
+
+        view.layout(200, 200, 500, 500)
 
     }
 

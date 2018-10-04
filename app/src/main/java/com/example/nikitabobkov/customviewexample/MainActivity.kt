@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity(), OnHoneycombClickListener {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.honeycomb.setOnClickListener(this)
+        binding.honeycombLayout.setHoneycombAmount(1)
     }
 
     override fun onHoneycombClick() {
