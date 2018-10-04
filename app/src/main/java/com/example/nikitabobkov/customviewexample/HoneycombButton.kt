@@ -118,6 +118,34 @@ class HoneycombButton : View {
     private fun setupRadius(widthMeasureSpec: Int, heightMeasureSpec: Int) {
 
         radius = if (radius > 0) radius else 200f
+        //TODO: 04/10/18 calculate radius
+        val widthMode = View.MeasureSpec.getMode(widthMeasureSpec)
+        val widthSize = View.MeasureSpec.getSize(widthMeasureSpec)
+        val heightMode = View.MeasureSpec.getMode(heightMeasureSpec)
+        val heightSize = View.MeasureSpec.getSize(heightMeasureSpec)
+
+        val width: Int
+        val height: Int
+
+        width = when (widthMode) {
+            View.MeasureSpec.EXACTLY ->
+                widthSize
+            View.MeasureSpec.AT_MOST ->
+                Math.min(200, widthSize)
+            View.MeasureSpec.UNSPECIFIED ->
+                Math.min(200, widthSize)
+            else -> 200
+        }
+
+        height = when (heightMode) {
+            View.MeasureSpec.EXACTLY ->
+                heightSize
+            View.MeasureSpec.AT_MOST ->
+                Math.min(200, heightSize)
+            View.MeasureSpec.UNSPECIFIED ->
+                Math.min(200, heightSize)
+            else -> 200
+        }
     }
 
     private fun setupTextSize() {
