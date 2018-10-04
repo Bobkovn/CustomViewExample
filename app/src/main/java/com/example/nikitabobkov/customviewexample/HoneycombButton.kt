@@ -17,8 +17,8 @@ class HoneycombButton : View {
     private lateinit var textPaint: TextPaint
     private var radius: Float = 0f
     private var textSize: Float = 0f
-    private var widthHoneycomb: Int = 0
-    private var heightHoneycomb: Int = 0
+    private var widthView: Int = 0
+    private var heightView: Int = 0
     private var borderWidth: Float = 50f
     private var text: String = ""
     private var ellipsizeText: String = ""
@@ -99,14 +99,6 @@ class HoneycombButton : View {
         invalidate()
     }
 
-    fun getHoneycombWidth(): Int {
-        return widthHoneycomb
-    }
-
-    fun getHoneycombHeight(): Int {
-        return heightHoneycomb
-    }
-
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         setupRadius(widthMeasureSpec, heightMeasureSpec)
@@ -150,8 +142,8 @@ class HoneycombButton : View {
 
     private fun setupTextSize() {
         if (text.isNotEmpty()) {
-            textPaint.textSize = if (textSize > 0) textSize else (widthHoneycomb / 5).toFloat()
-            ellipsizeText = TextUtils.ellipsize(text, textPaint, widthHoneycomb.toFloat() - (borderWidth * 2), TextUtils.TruncateAt.END) as String
+            textPaint.textSize = if (textSize > 0) textSize else (widthView / 5).toFloat()
+            ellipsizeText = TextUtils.ellipsize(text, textPaint, widthView.toFloat() - (borderWidth * 2), TextUtils.TruncateAt.END) as String
             textPaint.getTextBounds(ellipsizeText, 0, ellipsizeText.length, bounds)
         }
     }
@@ -159,9 +151,9 @@ class HoneycombButton : View {
     private fun setupView() {
         val halfRadius = radius / 2f
         val triangleHeight = (Math.sqrt(3.0) * halfRadius).toFloat()
-        widthHoneycomb = (triangleHeight * 2 + borderWidth).toInt()
-        heightHoneycomb = (radius * 2 + borderWidth).toInt()
-        setMeasuredDimension(widthHoneycomb, heightHoneycomb)
+        widthView = (triangleHeight * 2 + borderWidth).toInt()
+        heightView = (radius * 2 + borderWidth).toInt()
+        setMeasuredDimension(widthView, heightView)
 
         val centerX = measuredWidth / 2f
         val centerY = measuredHeight / 2f
@@ -205,7 +197,7 @@ class HoneycombButton : View {
         canvas?.drawColor(color)
 
         if (text.isNotEmpty()) {
-            val xPos = (widthHoneycomb / 2 - bounds.width() / 2).toFloat()
+            val xPos = (widthView / 2 - bounds.width() / 2).toFloat()
             val yPos = (height / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
             canvas?.drawText(ellipsizeText, xPos, yPos, textPaint)
         }
@@ -219,8 +211,14 @@ class HoneycombButton : View {
         val x = event?.x!!.toInt()
         val y = event.y.toInt()
         if (clickableRegion.contains(x, y) && event.action == MotionEvent.ACTION_UP) {
-            listener?.onHoneycombClick()
+            performClick()
         }
+        return true
+    }
+
+    override fun performClick(): Boolean {
+        super.performClick()
+        listener?.onHoneycombClick()
         return true
     }
 }

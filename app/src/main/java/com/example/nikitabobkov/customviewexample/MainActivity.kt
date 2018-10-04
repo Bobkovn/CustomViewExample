@@ -9,6 +9,7 @@ import com.example.nikitabobkov.customviewexample.databinding.ActivityMainBindin
 class MainActivity : AppCompatActivity(), OnHoneycombClickListener {
     private lateinit var binding: ActivityMainBinding
     private var counter: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
