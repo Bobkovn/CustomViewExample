@@ -29,21 +29,22 @@ class HoneycombLayout : ViewGroup {
         for (i in amount downTo 0) {
             val view = HoneycombButton(context)
             view.setText(i.toString())
-            view.setRadius(500f)
+            view.setRadius(200f)
             addView(view)
         }
     }
 
-     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         widthView = MeasureSpec.getSize(widthMeasureSpec)
         heightView = MeasureSpec.getSize(heightMeasureSpec)
+        // measure child
+        measureChild(getChildAt(0), 300, 300)
         setMeasuredDimension(widthView, heightView)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         val view = getChildAt(0)
-
         view.layout(200, 200, 500, 500)
 
     }
