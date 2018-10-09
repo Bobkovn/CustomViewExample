@@ -108,35 +108,16 @@ class HoneycombButton : View {
     }
 
     private fun setupRadius(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-
-        radius = if (radius > 0) radius else 200f
-        //TODO: 04/10/18 calculate radius
         val widthMode = View.MeasureSpec.getMode(widthMeasureSpec)
         val widthSize = View.MeasureSpec.getSize(widthMeasureSpec)
         val heightMode = View.MeasureSpec.getMode(heightMeasureSpec)
         val heightSize = View.MeasureSpec.getSize(heightMeasureSpec)
-
-        val width: Int
-        val height: Int
-
-        width = when (widthMode) {
-            View.MeasureSpec.EXACTLY ->
-                widthSize
-            View.MeasureSpec.AT_MOST ->
-                Math.min(200, widthSize)
-            View.MeasureSpec.UNSPECIFIED ->
-                Math.min(200, widthSize)
-            else -> 200
-        }
-
-        height = when (heightMode) {
-            View.MeasureSpec.EXACTLY ->
-                heightSize
-            View.MeasureSpec.AT_MOST ->
-                Math.min(200, heightSize)
-            View.MeasureSpec.UNSPECIFIED ->
-                Math.min(200, heightSize)
-            else -> 200
+        if(radius == 0f) {
+            radius = if(widthMode == View.MeasureSpec.EXACTLY || heightMode == View.MeasureSpec.EXACTLY) {
+                Math.min(widthSize / 2f, heightSize / 2f)
+            } else {
+                200f
+            }
         }
     }
 
@@ -198,7 +179,7 @@ class HoneycombButton : View {
 
         if (text.isNotEmpty()) {
             val xPos = (widthView / 2 - bounds.width() / 2).toFloat()
-            val yPos = (height / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
+            val yPos = (heightView / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
             canvas?.drawText(ellipsizeText, xPos, yPos, textPaint)
         }
     }
