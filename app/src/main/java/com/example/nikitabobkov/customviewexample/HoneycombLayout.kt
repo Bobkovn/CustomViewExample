@@ -4,8 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.ViewGroup
 
-const val DEFAULT_RADIUS = 100f
-
 class HoneycombLayout : ViewGroup {
     private var amount = 0
     private var widthView = 0
@@ -28,7 +26,7 @@ class HoneycombLayout : ViewGroup {
 
     private fun addHoneycombs() {
         removeAllViews()
-        for (i in amount downTo 0) {
+        for (i in 0..amount) {
             val view = HoneycombButton(context)
             view.setText(i.toString())
             honeycombRadius = if (honeycombRadius > 0) honeycombRadius else DEFAULT_RADIUS
@@ -53,19 +51,20 @@ class HoneycombLayout : ViewGroup {
         var xRightBottom = 0
         var yRightBottom = 0
         var linesCounter = 0
-
-        for (i in amount downTo 0) {
+        var isNewLine = false
+        for (i in 0 until childCount) {
             val view = getChildAt(i)
-            view.layout(xLeftTop, yLeftTop, xRightBottom + view.measuredWidth, yRightBottom + view.measuredHeight)
-            xLeftTop += view.measuredWidth
             xRightBottom += view.measuredWidth
             if (xRightBottom > width) {
+                isNewLine = true
                 linesCounter++
                 xRightBottom = if (linesCounter % 2 != 0) view.measuredWidth / 2 else 0
                 xLeftTop = if (linesCounter % 2 != 0) view.measuredWidth / 2 else 0
-                yLeftTop += (honeycombRadius * 2).toInt()
+                yLeftTop += (honeycombRadius * 2).toInt() - 8
                 yRightBottom += (honeycombRadius * 2).toInt()
             }
+            view.layout(xLeftTop, yLeftTop, xRightBottom, yRightBottom + view.measuredHeight)
+            if (!isNewLine) xLeftTop += view.measuredWidth else isNewLine = false
         }
     }
 
