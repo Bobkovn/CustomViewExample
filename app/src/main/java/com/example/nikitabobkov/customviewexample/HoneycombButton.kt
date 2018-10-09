@@ -9,7 +9,6 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 
-
 class HoneycombButton : View {
     private lateinit var hexagonPath: Path
     private lateinit var hexagonBorderPath: Path
@@ -116,7 +115,7 @@ class HoneycombButton : View {
             radius = if(widthMode == View.MeasureSpec.EXACTLY || heightMode == View.MeasureSpec.EXACTLY) {
                 Math.min(widthSize / 2f, heightSize / 2f)
             } else {
-                200f
+                DEFAULT_RADIUS
             }
         }
     }

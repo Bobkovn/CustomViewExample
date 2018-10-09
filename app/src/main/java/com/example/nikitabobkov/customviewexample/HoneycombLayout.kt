@@ -1,14 +1,16 @@
 package com.example.nikitabobkov.customviewexample
 
 import android.content.Context
-import android.hardware.SensorManager
 import android.util.AttributeSet
 import android.view.ViewGroup
 
+const val DEFAULT_RADIUS = 100f
+
 class HoneycombLayout : ViewGroup {
-    private var amount: Int = 0
-    private var widthView: Int = 0
-    private var heightView: Int = 0
+    private var amount = 0
+    private var widthView = 0
+    private var heightView = 0
+    private var honeycombRadius = 0f
 
     constructor(context: Context) : this(context, null)
 
@@ -29,7 +31,8 @@ class HoneycombLayout : ViewGroup {
         for (i in amount downTo 0) {
             val view = HoneycombButton(context)
             view.setText(i.toString())
-            view.setRadius(200f)
+            honeycombRadius = if (honeycombRadius > 0) honeycombRadius else DEFAULT_RADIUS
+            view.setRadius(honeycombRadius)
             addView(view)
         }
     }
@@ -38,15 +41,37 @@ class HoneycombLayout : ViewGroup {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         widthView = MeasureSpec.getSize(widthMeasureSpec)
         heightView = MeasureSpec.getSize(heightMeasureSpec)
-        // measure child
-        measureChild(getChildAt(0), 300, 300)
+        for (i in amount downTo 0) {
+            measureChild(getChildAt(i), (honeycombRadius * 2).toInt(), (honeycombRadius * 2).toInt())
+        }
         setMeasuredDimension(widthView, heightView)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        val view = getChildAt(0)
-        view.layout(200, 200, 500, 500)
+        var xLeftTop = 0
+        var yLeftTop = 0
+        var xRightBottom = 0
+        var yRightBottom = 0
+        var linesCounter = 0
 
+        for (i in amount downTo 0) {
+            val view = getChildAt(i)
+            view.layout(xLeftTop, yLeftTop, xRightBottom + view.measuredWidth, yRightBottom + view.measuredHeight)
+            xLeftTop += view.measuredWidth
+            xRightBottom += view.measuredWidth
+            if (xRightBottom > width) {
+                linesCounter++
+                xRightBottom = if (linesCounter % 2 != 0) view.measuredWidth / 2 else 0
+                xLeftTop = if (linesCounter % 2 != 0) view.measuredWidth / 2 else 0
+                yLeftTop += (honeycombRadius * 2).toInt()
+                yRightBottom += (honeycombRadius * 2).toInt()
+            }
+        }
+    }
+
+    fun setHoneycombRadius(radius: Float) {
+        honeycombRadius = radius
+        requestLayout()
     }
 
     fun setHoneycombAmount(amount: Int) {
