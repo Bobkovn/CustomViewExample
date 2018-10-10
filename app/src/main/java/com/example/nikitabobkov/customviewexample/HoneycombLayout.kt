@@ -1,11 +1,11 @@
 package com.example.nikitabobkov.customviewexample
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.CornerPathEffect
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ViewGroup
+
+const val HONEYCOMB_MARGIN = 30
 
 class HoneycombLayout : ViewGroup {
     private var amount = 0
@@ -66,7 +66,7 @@ class HoneycombLayout : ViewGroup {
                 xRightBottom = if (linesCounter % 2 != 0) view.measuredWidth / 2 else 0
                 xLeftTop = if (linesCounter % 2 != 0) view.measuredWidth / 2 else 0
                 xRightBottom += view.measuredWidth
-                yLeftTop += (honeycombRadius * 2).toInt()
+                yLeftTop += view.measuredHeight - (Math.sqrt(3.0) * (honeycombRadius / 2)).toInt() //+ ((HONEYCOMB_MARGIN * (honeycombRadius / 100))).toInt()
             }
             yRightBottom = yLeftTop + view.measuredHeight
             if (yRightBottom > height) {

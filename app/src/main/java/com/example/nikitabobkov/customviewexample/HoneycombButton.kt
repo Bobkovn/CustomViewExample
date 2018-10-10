@@ -9,7 +9,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 
-const val DEFAULT_RADIUS = 100f
+const val DEFAULT_RADIUS = 200f
 
 class HoneycombButton : View {
     private lateinit var hexagonPath: Path

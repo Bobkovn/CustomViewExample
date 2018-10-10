@@ -9,7 +9,6 @@ import com.example.nikitabobkov.customviewexample.databinding.ActivityMainBindin
 
 class MainActivity : AppCompatActivity(), OnHoneycombClickListener {
     private lateinit var binding: ActivityMainBinding
-    private var counter: Int = 0
     private var honeycombVisible: Boolean = false
 
 
