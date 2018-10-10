@@ -1,7 +1,10 @@
 package com.example.nikitabobkov.customviewexample
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.CornerPathEffect
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.ViewGroup
 
 class HoneycombLayout : ViewGroup {
@@ -17,10 +20,14 @@ class HoneycombLayout : ViewGroup {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
-        init()
+        init(attrs)
     }
 
-    private fun init() {
+    private fun init(attrs: AttributeSet?) {
+        val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.HoneycombLayout, 0, 0)
+        amount = typedArray.getInteger(R.styleable.HoneycombLayout_hcl_amount, 25)
+        honeycombRadius = typedArray.getFloat(R.styleable.HoneycombLayout_hcl_radius, 0f)
+        typedArray.recycle()
         addHoneycombs()
     }
 
@@ -39,7 +46,7 @@ class HoneycombLayout : ViewGroup {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         widthView = MeasureSpec.getSize(widthMeasureSpec)
         heightView = MeasureSpec.getSize(heightMeasureSpec)
-        for (i in amount downTo 0) {
+        for (i in 0 until childCount) {
             measureChild(getChildAt(i), (honeycombRadius * 2).toInt(), (honeycombRadius * 2).toInt())
         }
         setMeasuredDimension(widthView, heightView)
@@ -49,25 +56,24 @@ class HoneycombLayout : ViewGroup {
         var xLeftTop = 0
         var yLeftTop = 0
         var xRightBottom = 0
-        var yRightBottom = 0
+        var yRightBottom: Int
         var linesCounter = 0
-        var isNewLine = false
         for (i in 0 until childCount) {
             val view = getChildAt(i)
             xRightBottom += view.measuredWidth
             if (xRightBottom > width) {
-                isNewLine = true
                 linesCounter++
                 xRightBottom = if (linesCounter % 2 != 0) view.measuredWidth / 2 else 0
                 xLeftTop = if (linesCounter % 2 != 0) view.measuredWidth / 2 else 0
+                xRightBottom += view.measuredWidth
                 yLeftTop += (honeycombRadius * 2).toInt()
             }
             yRightBottom = yLeftTop + view.measuredHeight
             if (yRightBottom > height) {
                 return
             }
-            view.layout(xLeftTop, yLeftTop, xRightBottom,  yRightBottom)
-            if (!isNewLine) xLeftTop += view.measuredWidth else  isNewLine = false
+            view.layout(xLeftTop, yLeftTop, xRightBottom, yRightBottom)
+            xLeftTop += view.measuredWidth
         }
     }
 
@@ -80,5 +86,18 @@ class HoneycombLayout : ViewGroup {
         this.amount = amount
         addHoneycombs()
         invalidate()
+    }
+
+    fun setOnClickListener(listener: OnHoneycombClickListener) {
+        for (i in 0 until childCount) {
+            val view = getChildAt(i)
+            if (view is HoneycombButton) {
+                view.setOnClickListener(listener)
+            }
+        }
+    }
+
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        return false
     }
 }

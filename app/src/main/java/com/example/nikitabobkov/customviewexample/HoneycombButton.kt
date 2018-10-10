@@ -200,7 +200,7 @@ class HoneycombButton : View {
 
     override fun performClick(): Boolean {
         super.performClick()
-        listener?.onHoneycombClick()
+        listener?.onHoneycombClick(text)
         return true
     }
 }

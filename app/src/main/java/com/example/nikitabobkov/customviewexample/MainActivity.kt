@@ -4,6 +4,7 @@ import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import com.example.nikitabobkov.customviewexample.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), OnHoneycombClickListener {
@@ -18,12 +19,10 @@ class MainActivity : AppCompatActivity(), OnHoneycombClickListener {
         binding.honeycomb.visibility = if (honeycombVisible) View.VISIBLE else View.INVISIBLE
         binding.honeycombLayout.visibility = if (!honeycombVisible) View.VISIBLE else View.INVISIBLE
         binding.honeycomb.setOnClickListener(this)
-        binding.honeycombLayout.setHoneycombAmount(50)
+        binding.honeycombLayout.setOnClickListener(this)
     }
 
-    override fun onHoneycombClick() {
-        counter += 50
-        //binding.honeycomb.setRadius(counter.toFloat())
-        binding.honeycomb.setText(counter.toString())
+    override fun onHoneycombClick(text: String) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
 }

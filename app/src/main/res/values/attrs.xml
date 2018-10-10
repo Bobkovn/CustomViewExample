@@ -9,4 +9,9 @@
         <attr name="hcb_cornerRadius" format="float" />
         <attr name="hcb_radius" format="float" />
     </declare-styleable>
+
+    <declare-styleable name="HoneycombLayout">
+        <attr name="hcl_amount" format="integer" />
+        <attr name="hcl_radius" format="float" />
+    </declare-styleable>
 </resources>
