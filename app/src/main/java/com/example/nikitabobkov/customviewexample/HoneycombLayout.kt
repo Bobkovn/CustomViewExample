@@ -60,11 +60,14 @@ class HoneycombLayout : ViewGroup {
                 linesCounter++
                 xRightBottom = if (linesCounter % 2 != 0) view.measuredWidth / 2 else 0
                 xLeftTop = if (linesCounter % 2 != 0) view.measuredWidth / 2 else 0
-                yLeftTop += (honeycombRadius * 2).toInt() - 8
-                yRightBottom += (honeycombRadius * 2).toInt()
+                yLeftTop += (honeycombRadius * 2).toInt()
             }
-            view.layout(xLeftTop, yLeftTop, xRightBottom, yRightBottom + view.measuredHeight)
-            if (!isNewLine) xLeftTop += view.measuredWidth else isNewLine = false
+            yRightBottom = yLeftTop + view.measuredHeight
+            if (yRightBottom > height) {
+                return
+            }
+            view.layout(xLeftTop, yLeftTop, xRightBottom,  yRightBottom)
+            if (!isNewLine) xLeftTop += view.measuredWidth else  isNewLine = false
         }
     }
 
