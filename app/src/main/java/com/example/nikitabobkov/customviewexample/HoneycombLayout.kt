@@ -4,8 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ViewGroup
+import com.example.nikitabobkov.customviewexample.Utils.Companion.convertDpToPixel
 
-const val HONEYCOMB_MARGIN = 30
+
+const val HONEYCOMB_MARGIN = 20
 
 class HoneycombLayout : ViewGroup {
     private var amount = 0
@@ -37,7 +39,7 @@ class HoneycombLayout : ViewGroup {
             val view = HoneycombButton(context)
             view.setText(i.toString())
             honeycombRadius = if (honeycombRadius > 0) honeycombRadius else DEFAULT_RADIUS
-            view.setRadius(honeycombRadius)
+            view.setRadius(convertDpToPixel(honeycombRadius, context))
             addView(view)
         }
     }
@@ -66,7 +68,7 @@ class HoneycombLayout : ViewGroup {
                 xRightBottom = if (linesCounter % 2 != 0) view.measuredWidth / 2 else 0
                 xLeftTop = if (linesCounter % 2 != 0) view.measuredWidth / 2 else 0
                 xRightBottom += view.measuredWidth
-                yLeftTop += view.measuredHeight - (Math.sqrt(3.0) * (honeycombRadius / 2)).toInt() //+ ((HONEYCOMB_MARGIN * (honeycombRadius / 100))).toInt()
+                yLeftTop += view.measuredHeight - view.measuredHeight / 5
             }
             yRightBottom = yLeftTop + view.measuredHeight
             if (yRightBottom > height) {
@@ -76,6 +78,7 @@ class HoneycombLayout : ViewGroup {
             xLeftTop += view.measuredWidth
         }
     }
+
 
     fun setHoneycombRadius(radius: Float) {
         honeycombRadius = radius

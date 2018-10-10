@@ -8,8 +8,10 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import com.example.nikitabobkov.customviewexample.Utils.Companion.convertDpToPixel
 
-const val DEFAULT_RADIUS = 200f
+const val DEFAULT_RADIUS = 40f
+const val BORDER_MARGIN = 5f
 
 class HoneycombButton : View {
     private lateinit var hexagonPath: Path
@@ -56,6 +58,7 @@ class HoneycombButton : View {
         textSize = typedArray.getFloat(R.styleable.HoneycombButton_hcb_textSize, 0f)
         borderPaint.pathEffect = CornerPathEffect(typedArray.getFloat(R.styleable.HoneycombButton_hcb_cornerRadius, 10f))
         radius = typedArray.getFloat(R.styleable.HoneycombButton_hcb_radius, 0f)
+        radius = convertDpToPixel(radius, context)
         typedArray.recycle()
     }
 
@@ -117,7 +120,7 @@ class HoneycombButton : View {
             radius = if (widthMode == View.MeasureSpec.EXACTLY || heightMode == View.MeasureSpec.EXACTLY) {
                 Math.min(widthSize / 2f, heightSize / 2f)
             } else {
-                DEFAULT_RADIUS
+                convertDpToPixel(DEFAULT_RADIUS, context)
             }
         }
     }
@@ -133,7 +136,8 @@ class HoneycombButton : View {
     private fun setupView() {
         val halfRadius = radius / 2f
         val triangleHeight = (Math.sqrt(3.0) * halfRadius).toFloat()
-        widthView = (triangleHeight * 2 + borderWidth).toInt()
+        val margin = (convertDpToPixel(HONEYCOMB_MARGIN.toFloat(), context)).toInt()
+        widthView = (triangleHeight * 2 + borderWidth - BORDER_MARGIN * 2).toInt() + margin / 2
         heightView = (radius * 2 + borderWidth).toInt()
         setMeasuredDimension(widthView, heightView)
 
@@ -149,7 +153,7 @@ class HoneycombButton : View {
         hexagonPath.lineTo(centerX + triangleHeight, centerY + halfRadius)
         hexagonPath.close()
 
-        val radiusBorder = radius - 5f
+        val radiusBorder = radius - BORDER_MARGIN
         val halfRadiusBorder = radiusBorder / 2f
         val triangleBorderHeight = (Math.sqrt(3.0) * halfRadiusBorder).toFloat()
 
