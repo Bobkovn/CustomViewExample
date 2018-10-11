@@ -68,7 +68,7 @@ class HoneycombButton : View {
     }
 
     fun setRadius(radius: Float) {
-        this.radius = radius
+        this.radius = convertDpToPixel(radius, context)
         requestLayout()
     }
 

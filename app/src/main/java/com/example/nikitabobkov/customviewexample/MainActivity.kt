@@ -14,9 +14,11 @@ class MainActivity : AppCompatActivity(), OnHoneycombClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
         binding.honeycomb.visibility = if (honeycombVisible) View.VISIBLE else View.INVISIBLE
-        binding.honeycombLayout.visibility = if (!honeycombVisible) View.VISIBLE else View.INVISIBLE
         binding.honeycomb.setOnClickListener(this)
+
+        binding.honeycombLayout.visibility = if (!honeycombVisible) View.VISIBLE else View.INVISIBLE
         binding.honeycombLayout.setOnClickListener(this)
     }
 

@@ -39,7 +39,7 @@ class HoneycombLayout : ViewGroup {
             val view = HoneycombButton(context)
             view.setText(i.toString())
             honeycombRadius = if (honeycombRadius > 0) honeycombRadius else DEFAULT_RADIUS
-            view.setRadius(convertDpToPixel(honeycombRadius, context))
+            view.setRadius(honeycombRadius)
             addView(view)
         }
     }
