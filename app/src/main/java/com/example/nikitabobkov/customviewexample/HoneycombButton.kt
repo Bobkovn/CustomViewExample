@@ -53,12 +53,14 @@ class HoneycombButton : View {
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.HoneycombButton, 0, 0)
         text = getTextFromAttr(typedArray)
         color = typedArray.getInteger(R.styleable.HoneycombButton_hcb_color, context.resources.getColor(R.color.colorHoneycomb))
-        borderPaint.color = typedArray.getInteger(R.styleable.HoneycombButton_hcb_borderColor, context.resources.getColor(R.color.colorHoneycombBorder))
         textPaint.color = typedArray.getInteger(R.styleable.HoneycombButton_hcb_textColor, Color.BLACK)
         textSize = typedArray.getFloat(R.styleable.HoneycombButton_hcb_textSize, 0f)
-        borderPaint.pathEffect = CornerPathEffect(typedArray.getFloat(R.styleable.HoneycombButton_hcb_cornerRadius, 10f))
         radius = typedArray.getFloat(R.styleable.HoneycombButton_hcb_radius, 0f)
         radius = convertDpToPixel(radius, context)
+        borderPaint.apply {
+            color = typedArray.getInteger(R.styleable.HoneycombButton_hcb_borderColor, context.resources.getColor(R.color.colorHoneycombBorder))
+            pathEffect = CornerPathEffect(typedArray.getFloat(R.styleable.HoneycombButton_hcb_cornerRadius, 10f))
+        }
         typedArray.recycle()
     }
 
