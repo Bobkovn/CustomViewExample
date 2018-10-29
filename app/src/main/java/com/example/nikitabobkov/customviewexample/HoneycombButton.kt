@@ -10,7 +10,7 @@ import android.view.MotionEvent
 import android.view.View
 import com.example.nikitabobkov.customviewexample.Utils.Companion.convertDpToPixel
 
-const val DEFAULT_RADIUS = 40f
+const val DEFAULT_RADIUS_DP = 40f
 const val BORDER_MARGIN = 5f
 
 class HoneycombButton : View {
@@ -37,10 +37,10 @@ class HoneycombButton : View {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
-        init(attrs)
+        init(attrs, defStyleAttr, defStyleRes)
     }
 
-    private fun init(attrs: AttributeSet?) {
+    private fun init(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) {
         hexagonPath = Path()
         hexagonBorderPath = Path()
         textPaint = TextPaint()
@@ -50,7 +50,7 @@ class HoneycombButton : View {
         borderPaint.strokeWidth = borderWidth
         borderPaint.style = Paint.Style.STROKE
 
-        val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.HoneycombButton, 0, 0)
+        val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.HoneycombButton, defStyleAttr, defStyleRes)
         text = getTextFromAttr(typedArray)
         color = typedArray.getInteger(R.styleable.HoneycombButton_hcb_color, context.resources.getColor(R.color.colorHoneycomb))
         textPaint.color = typedArray.getInteger(R.styleable.HoneycombButton_hcb_textColor, Color.BLACK)
@@ -122,7 +122,7 @@ class HoneycombButton : View {
             radius = if (widthMode == View.MeasureSpec.EXACTLY || heightMode == View.MeasureSpec.EXACTLY) {
                 Math.min(widthSize / 2f, heightSize / 2f)
             } else {
-                convertDpToPixel(DEFAULT_RADIUS, context)
+                convertDpToPixel(DEFAULT_RADIUS_DP, context)
             }
         }
     }
@@ -138,7 +138,7 @@ class HoneycombButton : View {
     private fun setupView() {
         val halfRadius = radius / 2f
         val triangleHeight = (Math.sqrt(3.0) * halfRadius).toFloat()
-        val margin = (convertDpToPixel(HONEYCOMB_MARGIN.toFloat(), context)).toInt()
+        val margin = (convertDpToPixel(HONEYCOMB_MARGIN_DP, context)).toInt()
         widthView = (triangleHeight * 2 + borderWidth - BORDER_MARGIN * 2).toInt() + margin / 2
         heightView = (radius * 2 + borderWidth).toInt()
         setMeasuredDimension(widthView, heightView)

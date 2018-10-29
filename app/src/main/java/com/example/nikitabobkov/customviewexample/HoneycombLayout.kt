@@ -6,7 +6,7 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 
 
-const val HONEYCOMB_MARGIN = 20
+const val HONEYCOMB_MARGIN_DP = 15f
 
 class HoneycombLayout : ViewGroup {
     private var amount = 0
@@ -34,10 +34,10 @@ class HoneycombLayout : ViewGroup {
 
     private fun addHoneycombs() {
         removeAllViews()
+        honeycombRadius = if (honeycombRadius > 0) honeycombRadius else DEFAULT_RADIUS_DP
         for (i in 0..amount) {
             val view = HoneycombButton(context)
             view.setText(i.toString())
-            honeycombRadius = if (honeycombRadius > 0) honeycombRadius else DEFAULT_RADIUS
             view.setRadius(honeycombRadius)
             addView(view)
         }
@@ -47,8 +47,9 @@ class HoneycombLayout : ViewGroup {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         widthView = MeasureSpec.getSize(widthMeasureSpec)
         heightView = MeasureSpec.getSize(heightMeasureSpec)
+        val sideSize = (honeycombRadius * 2).toInt()
         for (i in 0 until childCount) {
-            measureChild(getChildAt(i), (honeycombRadius * 2).toInt(), (honeycombRadius * 2).toInt())
+            getChildAt(i).measure(MeasureSpec.makeMeasureSpec(sideSize, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(sideSize, MeasureSpec.EXACTLY))
         }
         setMeasuredDimension(widthView, heightView)
     }
