@@ -112,7 +112,7 @@ class HoneycombButtonTextView : TextView {
         setupClickableRegion()
         invalidate()
 
-        gravity = Gravity.CENTER
+       // gravity = Gravity.CENTER
     }
 
     private fun setupRadius(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -140,7 +140,7 @@ class HoneycombButtonTextView : TextView {
     private fun setupTextSize() {
         paint.getTextBounds(text.toString(), 0, text.length, bounds)
         val sp = textSize / resources.displayMetrics.scaledDensity
-        if(bounds.width() > 500) {
+        if (bounds.width() > 500) {
             textSize = sp - 1
             setupTextSize()
         }
@@ -151,45 +151,55 @@ class HoneycombButtonTextView : TextView {
         val triangleHeight = (Math.sqrt(3.0) * halfRadius).toFloat()
         val margin = (Utils.convertDpToPixel(HONEYCOMB_MARGIN_DP, context)).toInt()
         widthView = (triangleHeight * 2 + borderWidth - BORDER_MARGIN * 2).toInt() + margin / 2
-        heightView = (radius * 2 + borderWidth).toInt()
+        heightView = (radius * 2).toInt()
         setMeasuredDimension(heightView, heightView)
 
         val centerX = measuredWidth / 2f
         val centerY = measuredHeight / 2f
 
-        val x0 = centerX
-        val y0 = centerX + radius
+        var x0 = centerX
+        var y0 = centerX + radius
         val x = centerX
         val y = centerY
 
-        val rx = x0 - x
-        val ry = y0 - y
-        val c = Math.cos(60.0)
-        val s = Math.sin(60.0)
-        val x1 = x + rx * c - ry * s
-        val y1 = y + rx * s + ry * c
-
         hexagonPath.reset()
-        hexagonPath.moveTo(centerX, centerY + radius)
-        hexagonPath.lineTo(centerX - triangleHeight, centerY + halfRadius)
-        hexagonPath.lineTo(centerX - triangleHeight, centerY - halfRadius)
-        hexagonPath.lineTo(centerX, centerY - radius)
-        hexagonPath.lineTo(centerX + triangleHeight, centerY - halfRadius)
-        hexagonPath.lineTo(centerX + triangleHeight, centerY + halfRadius)
+        var angel = 0.0
+
+        val section = 2.0 * Math.PI / 6
+        angel = section
+        hexagonPath.moveTo(x0, y0)
+        for (i in 0 until 6) {
+            val x1 = x + radius * Math.cos(angel * i + 0.515)
+            val y1 = y + radius * Math.sin(angel * i + 0.515)
+            if (i == 0) {
+                hexagonPath.moveTo(x1.toFloat(), y1.toFloat())
+            } else {
+
+                hexagonPath.lineTo(x1.toFloat(), y1.toFloat())
+            }
+            //angel += 60
+        }
+
+
+//        hexagonPath.lineTo(centerX - triangleHeight, centerY + halfRadius)
+//        hexagonPath.lineTo(centerX - triangleHeight, centerY - halfRadius)
+//        hexagonPath.lineTo(centerX, centerY - radius)
+//        hexagonPath.lineTo(centerX + triangleHeight, centerY - halfRadius)
+//        hexagonPath.lineTo(centerX + triangleHeight, centerY + halfRadius)
         hexagonPath.close()
 
         val radiusBorder = radius - BORDER_MARGIN
         val halfRadiusBorder = radiusBorder / 2f
         val triangleBorderHeight = (Math.sqrt(3.0) * halfRadiusBorder).toFloat()
 
-        hexagonBorderPath.reset()
-        hexagonBorderPath.moveTo(centerX, centerY + radiusBorder)
-        hexagonBorderPath.lineTo(centerX - triangleBorderHeight, centerY + halfRadiusBorder)
-        hexagonBorderPath.lineTo(centerX - triangleBorderHeight, centerY - halfRadiusBorder)
-        hexagonBorderPath.lineTo(centerX, centerY - radiusBorder)
-        hexagonBorderPath.lineTo(centerX + triangleBorderHeight, centerY - halfRadiusBorder)
-        hexagonBorderPath.lineTo(centerX + triangleBorderHeight, centerY + halfRadiusBorder)
-        hexagonBorderPath.close()
+//        hexagonBorderPath.reset()
+//        hexagonBorderPath.moveTo(centerX, centerY + radiusBorder)
+//        hexagonBorderPath.lineTo(centerX - triangleBorderHeight, centerY + halfRadiusBorder)
+//        hexagonBorderPath.lineTo(centerX - triangleBorderHeight, centerY - halfRadiusBorder)
+//        hexagonBorderPath.lineTo(centerX, centerY - radiusBorder)
+//        hexagonBorderPath.lineTo(centerX + triangleBorderHeight, centerY - halfRadiusBorder)
+//        hexagonBorderPath.lineTo(centerX + triangleBorderHeight, centerY + halfRadiusBorder)
+//        hexagonBorderPath.close()
 
         setupTextSize()
     }
