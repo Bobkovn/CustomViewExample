@@ -21,7 +21,7 @@ class HoneycombButtonTextView : TextView {
     private var widthView: Int = 0
     private var heightView: Int = 0
     private var borderWidth: Float = 50f
-    private var text: String = ""
+    //private var text: String = ""
     private var ellipsizeText: String = ""
     private var clickableRegion = Region()
     private var listener: OnHoneycombClickListener? = null
@@ -129,11 +129,20 @@ class HoneycombButtonTextView : TextView {
         }
     }
 
+//    private fun setupTextSize() {
+//        if (text.isNotEmpty()) {
+//            textPaint.textSize = if (mTextSize > 0) mTextSize else (widthView / 5).toFloat()
+//            ellipsizeText = TextUtils.ellipsize(text, textPaint, widthView.toFloat() - (borderWidth * 2), TextUtils.TruncateAt.END) as String
+//            textPaint.getTextBounds(ellipsizeText, 0, ellipsizeText.length, bounds)
+//        }
+//    }
+
     private fun setupTextSize() {
-        if (text.isNotEmpty()) {
-            textPaint.textSize = if (mTextSize > 0) mTextSize else (widthView / 5).toFloat()
-            ellipsizeText = TextUtils.ellipsize(text, textPaint, widthView.toFloat() - (borderWidth * 2), TextUtils.TruncateAt.END) as String
-            textPaint.getTextBounds(ellipsizeText, 0, ellipsizeText.length, bounds)
+        paint.getTextBounds(text.toString(), 0, text.length, bounds)
+        val sp = textSize / resources.displayMetrics.scaledDensity
+        if(bounds.width() > 500) {
+            textSize = sp - 1
+            setupTextSize()
         }
     }
 
@@ -147,6 +156,18 @@ class HoneycombButtonTextView : TextView {
 
         val centerX = measuredWidth / 2f
         val centerY = measuredHeight / 2f
+
+        val x0 = centerX
+        val y0 = centerX + radius
+        val x = centerX
+        val y = centerY
+
+        val rx = x0 - x
+        val ry = y0 - y
+        val c = Math.cos(60.0)
+        val s = Math.sin(60.0)
+        val x1 = x + rx * c - ry * s
+        val y1 = y + rx * s + ry * c
 
         hexagonPath.reset()
         hexagonPath.moveTo(centerX, centerY + radius)
@@ -171,6 +192,10 @@ class HoneycombButtonTextView : TextView {
         hexagonBorderPath.close()
 
         setupTextSize()
+    }
+
+    private fun setupHoneyComb() {
+
     }
 
     private fun setupClickableRegion() {
@@ -209,7 +234,7 @@ class HoneycombButtonTextView : TextView {
 
     override fun performClick(): Boolean {
         super.performClick()
-        listener?.onHoneycombClick(text)
+        listener?.onHoneycombClick(text.toString())
         return true
     }
 }
