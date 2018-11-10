@@ -163,10 +163,7 @@ class HoneycombButtonTextView : TextView {
         val y = centerY
 
         hexagonPath.reset()
-        var angel = 0.0
-
-        val section = 2.0 * Math.PI / 6
-        angel = section
+        val angel = 2.0 * Math.PI / 6
         hexagonPath.moveTo(x0, y0)
         for (i in 0 until 6) {
             val x1 = x + radius * Math.cos(angel * i + 0.515)
@@ -174,10 +171,8 @@ class HoneycombButtonTextView : TextView {
             if (i == 0) {
                 hexagonPath.moveTo(x1.toFloat(), y1.toFloat())
             } else {
-
                 hexagonPath.lineTo(x1.toFloat(), y1.toFloat())
             }
-            //angel += 60
         }
 
 
