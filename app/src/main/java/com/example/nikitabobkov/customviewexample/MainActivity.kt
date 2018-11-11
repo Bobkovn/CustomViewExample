@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity(), OnHoneycombClickListener {
 
         binding.honeycomb.visibility = View.INVISIBLE
         binding.honeycombLayout.visibility = View.INVISIBLE
+        binding.honeycombTextView.setText("sdfsdfsdfsdfsdfsdfsdfsdfsd")
     }
 
     override fun onHoneycombClick(text: String) {

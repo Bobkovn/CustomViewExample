@@ -3,26 +3,22 @@ package com.example.nikitabobkov.customviewexample
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.*
-import android.text.TextPaint
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 
+const val THIRTY_DEGREE_RADIAN = 0.523599
+const val HEXAGON_SIDE = 6
+
 class HoneycombButtonTextView : TextView {
     private lateinit var hexagonPath: Path
     private lateinit var hexagonBorderPath: Path
     private lateinit var borderPaint: Paint
-    private lateinit var textPaint: TextPaint
     private var radius: Float = 0f
-    private var mTextSize: Float = 0f
-    private var widthView: Int = 0
     private var heightView: Int = 0
     private var borderWidth: Float = 50f
-    //private var text: String = ""
-    private var ellipsizeText: String = ""
     private var clickableRegion = Region()
     private var listener: OnHoneycombClickListener? = null
     private var bounds: Rect = Rect()
@@ -41,9 +37,8 @@ class HoneycombButtonTextView : TextView {
     private fun init(attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) {
         hexagonPath = Path()
         hexagonBorderPath = Path()
-        textPaint = TextPaint()
 
-
+        gravity = Gravity.CENTER
         borderPaint = Paint()
         borderPaint.strokeCap = Paint.Cap.ROUND
         borderPaint.strokeWidth = borderWidth
@@ -52,8 +47,6 @@ class HoneycombButtonTextView : TextView {
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.HoneycombButton, defStyleAttr, defStyleRes)
         text = getTextFromAttr(typedArray)
         color = typedArray.getInteger(R.styleable.HoneycombButton_hcb_color, context.resources.getColor(R.color.colorHoneycomb))
-        textPaint.color = typedArray.getInteger(R.styleable.HoneycombButton_hcb_textColor, Color.BLACK)
-        mTextSize = typedArray.getFloat(R.styleable.HoneycombButton_hcb_textSize, 0f)
         radius = typedArray.getFloat(R.styleable.HoneycombButton_hcb_radius, 0f)
         radius = Utils.convertDpToPixel(radius, context)
         borderPaint.apply {
@@ -83,16 +76,6 @@ class HoneycombButtonTextView : TextView {
         invalidate()
     }
 
-//    fun setTextColor(color: Int) {
-//        textPaint.color = context.resources.getColor(color)
-//        invalidate()
-//    }
-
-//    fun setTextSize(textSize: Float) {
-//        textPaint.textSize = textSize
-//        invalidate()
-//    }
-
     fun setBorderColor(color: Int) {
         borderPaint.color = context.resources.getColor(color)
         invalidate()
@@ -105,14 +88,11 @@ class HoneycombButtonTextView : TextView {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        //super.onMeasure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED))
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         setupRadius(widthMeasureSpec, heightMeasureSpec)
         setupView()
         setupClickableRegion()
         invalidate()
-
-       // gravity = Gravity.CENTER
     }
 
     private fun setupRadius(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -129,78 +109,41 @@ class HoneycombButtonTextView : TextView {
         }
     }
 
-//    private fun setupTextSize() {
-//        if (text.isNotEmpty()) {
-//            textPaint.textSize = if (mTextSize > 0) mTextSize else (widthView / 5).toFloat()
-//            ellipsizeText = TextUtils.ellipsize(text, textPaint, widthView.toFloat() - (borderWidth * 2), TextUtils.TruncateAt.END) as String
-//            textPaint.getTextBounds(ellipsizeText, 0, ellipsizeText.length, bounds)
-//        }
-//    }
-
-    private fun setupTextSize() {
-        paint.getTextBounds(text.toString(), 0, text.length, bounds)
-        val sp = textSize / resources.displayMetrics.scaledDensity
-        if (bounds.width() > 500) {
-            textSize = sp - 1
-            setupTextSize()
-        }
-    }
-
     private fun setupView() {
-        val halfRadius = radius / 2f
-        val triangleHeight = (Math.sqrt(3.0) * halfRadius).toFloat()
-        val margin = (Utils.convertDpToPixel(HONEYCOMB_MARGIN_DP, context)).toInt()
-        widthView = (triangleHeight * 2 + borderWidth - BORDER_MARGIN * 2).toInt() + margin / 2
         heightView = (radius * 2).toInt()
         setMeasuredDimension(heightView, heightView)
 
         val centerX = measuredWidth / 2f
         val centerY = measuredHeight / 2f
-
-        var x0 = centerX
-        var y0 = centerX + radius
-        val x = centerX
-        val y = centerY
-
+        val radiusBorder = radius - BORDER_MARGIN
         hexagonPath.reset()
-        val angel = 2.0 * Math.PI / 6
-        hexagonPath.moveTo(x0, y0)
-        for (i in 0 until 6) {
-            val x1 = x + radius * Math.cos(angel * i + 0.515)
-            val y1 = y + radius * Math.sin(angel * i + 0.515)
+        hexagonBorderPath.reset()
+        val radian = 2.0 * Math.PI / HEXAGON_SIDE
+        hexagonPath.moveTo(centerX, centerX + radius)
+        for (i in 0 until HEXAGON_SIDE) {
+            val x1 = (centerX + radius * Math.cos(radian * i + THIRTY_DEGREE_RADIAN)).toFloat()
+            val y1 = (centerY + radius * Math.sin(radian * i + THIRTY_DEGREE_RADIAN)).toFloat()
             if (i == 0) {
-                hexagonPath.moveTo(x1.toFloat(), y1.toFloat())
+                hexagonPath.moveTo(x1, y1)
+                hexagonBorderPath.moveTo(centerX, centerY + radiusBorder)
             } else {
-                hexagonPath.lineTo(x1.toFloat(), y1.toFloat())
+                hexagonPath.lineTo(x1, y1)
+                hexagonBorderPath.lineTo(x1, y1)
             }
         }
-
-
-//        hexagonPath.lineTo(centerX - triangleHeight, centerY + halfRadius)
-//        hexagonPath.lineTo(centerX - triangleHeight, centerY - halfRadius)
-//        hexagonPath.lineTo(centerX, centerY - radius)
-//        hexagonPath.lineTo(centerX + triangleHeight, centerY - halfRadius)
-//        hexagonPath.lineTo(centerX + triangleHeight, centerY + halfRadius)
         hexagonPath.close()
-
-        val radiusBorder = radius - BORDER_MARGIN
-        val halfRadiusBorder = radiusBorder / 2f
-        val triangleBorderHeight = (Math.sqrt(3.0) * halfRadiusBorder).toFloat()
-
-//        hexagonBorderPath.reset()
-//        hexagonBorderPath.moveTo(centerX, centerY + radiusBorder)
-//        hexagonBorderPath.lineTo(centerX - triangleBorderHeight, centerY + halfRadiusBorder)
-//        hexagonBorderPath.lineTo(centerX - triangleBorderHeight, centerY - halfRadiusBorder)
-//        hexagonBorderPath.lineTo(centerX, centerY - radiusBorder)
-//        hexagonBorderPath.lineTo(centerX + triangleBorderHeight, centerY - halfRadiusBorder)
-//        hexagonBorderPath.lineTo(centerX + triangleBorderHeight, centerY + halfRadiusBorder)
-//        hexagonBorderPath.close()
+        hexagonBorderPath.close()
 
         setupTextSize()
     }
 
-    private fun setupHoneyComb() {
-
+    private fun setupTextSize() {
+        paint.getTextBounds(text.toString(), 0, text.length, bounds)
+        val sp = textSize / resources.displayMetrics.scaledDensity
+        if (bounds.width() > radius * 2) {
+            textSize = sp - 1
+            setupTextSize()
+        }
     }
 
     private fun setupClickableRegion() {
@@ -211,16 +154,9 @@ class HoneycombButtonTextView : TextView {
     }
 
     override fun onDraw(canvas: Canvas?) {
-        //canvas?.drawPath(hexagonBorderPath, borderPaint)
+        canvas?.drawPath(hexagonBorderPath, borderPaint)
         canvas?.clipPath(hexagonPath)
         canvas?.drawColor(color)
-
-        if (text.isNotEmpty()) {
-            val xPos = (widthView / 2 - bounds.width() / 2).toFloat()
-            val yPos = (heightView / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
-            canvas?.drawText(ellipsizeText, xPos, yPos, textPaint)
-        }
-
         super.onDraw(canvas)
     }
 

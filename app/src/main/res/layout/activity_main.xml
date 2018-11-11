@@ -38,7 +38,6 @@
             android:background="#ff0"
             android:layout_height="wrap_content"
             app:hcb_radius="100"
-            android:text="123456"
             android:textSize="20sp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
