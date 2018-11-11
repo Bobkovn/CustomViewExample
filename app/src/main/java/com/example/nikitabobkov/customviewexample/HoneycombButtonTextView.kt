@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
+import com.example.nikitabobkov.customviewexample.Utils.Companion.convertDpToPixel
 
 const val THIRTY_DEGREE_RADIAN = 0.523599
 const val HEXAGON_SIDE = 6
@@ -38,7 +39,6 @@ class HoneycombButtonTextView : TextView {
         hexagonPath = Path()
         hexagonBorderPath = Path()
 
-        gravity = Gravity.CENTER
         borderPaint = Paint()
         borderPaint.strokeCap = Paint.Cap.ROUND
         borderPaint.strokeWidth = borderWidth
@@ -92,6 +92,7 @@ class HoneycombButtonTextView : TextView {
         setupRadius(widthMeasureSpec, heightMeasureSpec)
         setupView()
         setupClickableRegion()
+        gravity = Gravity.CENTER
         invalidate()
     }
 
@@ -112,20 +113,17 @@ class HoneycombButtonTextView : TextView {
     private fun setupView() {
         heightView = (radius * 2).toInt()
         setMeasuredDimension(heightView, heightView)
-
         val centerX = measuredWidth / 2f
         val centerY = measuredHeight / 2f
-        val radiusBorder = radius - BORDER_MARGIN
         hexagonPath.reset()
         hexagonBorderPath.reset()
         val radian = 2.0 * Math.PI / HEXAGON_SIDE
-        hexagonPath.moveTo(centerX, centerX + radius)
         for (i in 0 until HEXAGON_SIDE) {
             val x1 = (centerX + radius * Math.cos(radian * i + THIRTY_DEGREE_RADIAN)).toFloat()
             val y1 = (centerY + radius * Math.sin(radian * i + THIRTY_DEGREE_RADIAN)).toFloat()
             if (i == 0) {
                 hexagonPath.moveTo(x1, y1)
-                hexagonBorderPath.moveTo(centerX, centerY + radiusBorder)
+                hexagonBorderPath.moveTo(x1, y1)
             } else {
                 hexagonPath.lineTo(x1, y1)
                 hexagonBorderPath.lineTo(x1, y1)
@@ -140,7 +138,7 @@ class HoneycombButtonTextView : TextView {
     private fun setupTextSize() {
         paint.getTextBounds(text.toString(), 0, text.length, bounds)
         val sp = textSize / resources.displayMetrics.scaledDensity
-        if (bounds.width() > radius * 2) {
+        if (bounds.width() > radius * 2 - convertDpToPixel(50f, context)) {
             textSize = sp - 1
             setupTextSize()
         }
