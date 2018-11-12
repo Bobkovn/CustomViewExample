@@ -35,11 +35,10 @@
         <com.example.nikitabobkov.customviewexample.HoneycombButtonTextView
             android:id="@+id/honeycombTextView"
             android:layout_width="wrap_content"
-            android:background="#ff0"
             android:layout_height="wrap_content"
             app:hcb_radius="100"
             android:textSize="20sp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

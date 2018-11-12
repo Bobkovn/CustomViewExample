@@ -20,10 +20,6 @@ class MainActivity : AppCompatActivity(), OnHoneycombClickListener {
 
         binding.honeycombLayout.visibility = if (!honeycombVisible) View.VISIBLE else View.INVISIBLE
         binding.honeycombLayout.setOnClickListener(this)
-
-        binding.honeycomb.visibility = View.INVISIBLE
-        binding.honeycombLayout.visibility = View.INVISIBLE
-        binding.honeycombTextView.setText("sdfsdfsdfsdfsdfsdfsdfsdfsd")
     }
 
     override fun onHoneycombClick(text: String) {

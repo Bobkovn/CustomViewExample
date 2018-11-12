@@ -36,7 +36,7 @@ class HoneycombLayout : ViewGroup {
         removeAllViews()
         honeycombRadius = if (honeycombRadius > 0) honeycombRadius else DEFAULT_RADIUS_DP
         for (i in 0..amount) {
-            val view = HoneycombButton(context)
+            val view = HoneycombButtonTextView(context)
             view.setText(i.toString())
             view.setRadius(honeycombRadius)
             addView(view)
@@ -48,8 +48,9 @@ class HoneycombLayout : ViewGroup {
         widthView = MeasureSpec.getSize(widthMeasureSpec)
         heightView = MeasureSpec.getSize(heightMeasureSpec)
         val sideSize = (honeycombRadius * 2).toInt()
+        val measureSpec = MeasureSpec.makeMeasureSpec(sideSize, MeasureSpec.EXACTLY)
         for (i in 0 until childCount) {
-            getChildAt(i).measure(MeasureSpec.makeMeasureSpec(sideSize, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(sideSize, MeasureSpec.EXACTLY))
+            getChildAt(i).measure(measureSpec, measureSpec)
         }
         setMeasuredDimension(widthView, heightView)
     }

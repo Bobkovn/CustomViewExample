@@ -83,8 +83,7 @@ class HoneycombButtonTextView : TextView {
 
     fun setText(text: String) {
         this.text = text
-        setupTextSize()
-        invalidate()
+        requestLayout()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -152,7 +151,7 @@ class HoneycombButtonTextView : TextView {
     }
 
     override fun onDraw(canvas: Canvas?) {
-        canvas?.drawPath(hexagonBorderPath, borderPaint)
+        //canvas?.drawPath(hexagonBorderPath, borderPaint)
         canvas?.clipPath(hexagonPath)
         canvas?.drawColor(color)
         super.onDraw(canvas)
